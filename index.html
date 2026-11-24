@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>أقرأ بثقة</title>
+<title>ابرام</title>
 <style>
 :root{--g:#0f766e;--g2:#14b8a6;--bg:#f1f5f4;--card:#fff;--ink:#12302d;--mut:#5b7370;--bad:#e11d48;--ok:#16a34a;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -69,7 +69,7 @@ select,input[type=range]{width:100%;font-family:inherit;padding:8px}
 </style>
 </head>
 <body>
-<header><h1>📖 أقرأ بثقة</h1><p id="sub"></p></header>
+<header><h1>📖 ابرام</h1><p id="sub"></p></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -203,7 +203,7 @@ function vWords(){
 function last14(){const a=[];const d=new Date();d.setDate(d.getDate()-13);for(let i=0;i<14;i++){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");a.push([k,S.days[k]?S.days[k].n:0,d.getDay()]);d.setDate(d.getDate()+1)}return a}
 function report(){const cl=curLevel(),dd=Object.keys(S.days).length,tot=Object.values(S.days).reduce((a,b)=>a+b.n,0),ok=Object.values(S.days).reduce((a,b)=>a+b.ok,0);
  const hard=Object.entries(S.stumble).filter(x=>x[1].good<2).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(x=>x[0]);
- return `تقرير القراءة${S.name?" - "+S.name:""}\nأيام التدريب: ${dd} | الأيام المتتالية: ${streak()}\nإجمالي التمارين: ${tot} | الصح: ${tot?Math.round(100*ok/tot):0}٪\nالدرس الحالي: ${cl.id}) ${cl.title} (${lvPct(cl)}٪)\nكلمات صعبة: ${hard.join("، ")||"لا يوجد"}`}
+ return `تقرير القراءة - تطبيق ابرام${S.name?" - "+S.name:""}\nأيام التدريب: ${dd} | الأيام المتتالية: ${streak()}\nإجمالي التمارين: ${tot} | الصح: ${tot?Math.round(100*ok/tot):0}٪\nالدرس الحالي: ${cl.id}) ${cl.title} (${lvPct(cl)}٪)\nكلمات صعبة: ${hard.join("، ")||"لا يوجد"}`}
 function vParent(){
  const l14=last14(),mx=Math.max(5,...l14.map(x=>x[1])),dn=["ح","ن","ث","ر","خ","ج","س"];
  $("#app").innerHTML=`<div class="card"><h2>👨‍👩‍👦 صفحة ولي الأمر</h2>

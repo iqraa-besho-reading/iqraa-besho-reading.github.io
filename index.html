@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>أقرأ بثقة</title>
+<style>
+:root{--g:#0f766e;--g2:#14b8a6;--bg:#f1f5f4;--card:#fff;--ink:#12302d;--mut:#5b7370;--bad:#e11d48;--ok:#16a34a;--warn:#f59e0b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic","Noto Sans Arabic",system-ui,sans-serif}
+body{min-height:100vh;padding-bottom:84px}
+header{background:linear-gradient(135deg,var(--g),#115e59);color:#fff;padding:18px 16px 16px;border-radius:0 0 22px 22px}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;opacity:.9;font-size:14px}
+main{padding:14px;max-width:560px;margin:0 auto}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #0f766e14}
+h2{margin:0 0 10px;font-size:18px}
+h3{margin:12px 0 6px;font-size:15px;color:var(--mut)}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:15px;font-size:18px;font-weight:700;background:var(--g);color:#fff;font-family:inherit;cursor:pointer}
+.btn.sec{background:#e2f1ef;color:var(--g)}
+.btn.bad{background:var(--bad)}.btn.ok{background:var(--ok)}
+.btn.small{display:inline-block;width:auto;padding:9px 14px;font-size:15px;border-radius:12px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #dbe7e5;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;border:0;background:none;padding:9px 2px 8px;font-size:12px;color:var(--mut);font-family:inherit}
+nav button b{display:block;font-size:20px;margin-bottom:1px}
+nav button.on{color:var(--g);font-weight:700}
+.bar{height:12px;background:#dcebe9;border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--g2),var(--g));border-radius:8px}
+.big{font-size:84px;line-height:1.5;text-align:center;font-family:"Noto Naskh Arabic","Traditional Arabic","Geeza Pro",Tahoma,serif;min-height:130px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;word-break:keep-all}
+.big.long{font-size:46px;line-height:1.9}
+.big.sent{font-size:34px;line-height:2.1}
+.big .sy{display:inline-block;padding:0 3px}
+.big.sep .sy{margin:0 7px;border-bottom:4px solid;border-radius:2px}
+.c0{color:#0f766e;border-color:#0f766e}.c1{color:#c2410c;border-color:#c2410c}.c2{color:#6d28d9;border-color:#6d28d9}.c3{color:#be123c;border-color:#be123c}.c4{color:#0369a1;border-color:#0369a1}
+.hint{text-align:center;color:var(--mut);font-size:14px;margin:4px 0 12px}
+.lv{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:#f6faf9;margin-bottom:8px;border:2px solid transparent;cursor:pointer}
+.lv.cur{border-color:var(--g2);background:#e9f8f5}
+.lv .n{width:38px;height:38px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.lv .t{flex:1}.lv .t b{display:block}.lv .t small{color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lt{background:#f6faf9;border-radius:14px;text-align:center;font-size:38px;padding:8px 0 6px;font-family:"Noto Naskh Arabic",serif;border:2px solid transparent;cursor:pointer}
+.lt small{display:block;font-size:12px;font-family:inherit;color:var(--mut)}
+.lt.m{border-color:var(--ok)}
+.forms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.forms div{background:#f6faf9;border-radius:12px;padding:6px 0;font-size:40px;font-family:"Noto Naskh Arabic",serif}
+.forms small{display:block;font-size:12px;font-family:inherit;color:var(--mut)}
+.pill{display:inline-block;background:#e2f1ef;color:var(--g);padding:3px 10px;border-radius:20px;font-size:13px;margin:2px}
+.w{display:inline-block;font-size:28px;font-family:"Noto Naskh Arabic",serif;background:#fff1f2;border:1px solid #fecdd3;border-radius:12px;padding:4px 12px;margin:4px;cursor:pointer}
+.stat{display:flex;gap:8px;text-align:center}.stat div{flex:1;background:#f6faf9;border-radius:14px;padding:10px 4px}.stat b{display:block;font-size:24px;color:var(--g)}.stat small{color:var(--mut);font-size:12px}
+.days{display:flex;gap:4px;align-items:flex-end;height:80px}.days div{flex:1;background:#cfe6e3;border-radius:5px 5px 0 0;min-height:4px;position:relative}
+.days div.t{background:var(--g)}
+.dl{display:flex;gap:4px;font-size:10px;color:var(--mut);text-align:center}.dl span{flex:1}
+.opt{font-size:46px;padding:10px 0;font-family:"Noto Naskh Arabic",serif;background:#f6faf9;border:3px solid #e2efed;border-radius:16px;text-align:center;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:#dcfce7}.opt.no{border-color:var(--bad);background:#ffe4e6}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}.top .bar{flex:1}
+.x{border:0;background:#e2f1ef;border-radius:50%;width:36px;height:36px;font-size:18px}
+.banner{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px;font-size:14px;margin-bottom:12px}
+.modal{position:fixed;inset:0;background:#0008;z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.modal>div{background:#fff;border-radius:22px 22px 0 0;padding:18px;width:100%;max-width:560px;max-height:88vh;overflow:auto}
+textarea{width:100%;min-height:90px;border-radius:12px;border:1px solid #cfe0de;padding:8px;font-family:inherit;direction:ltr}
+.ph{display:flex;gap:8px;overflow:auto;margin:8px 0}.ph img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:3px solid var(--g2);flex:none}.hero{width:140px;height:140px;object-fit:cover;border-radius:50%;border:4px solid var(--g2);display:block;margin:0 auto 8px}
+.praise{text-align:center;font-size:56px}
+select,input[type=range]{width:100%;font-family:inherit;padding:8px}
+</style>
+</head>
+<body>
+<header><h1>📖 أقرأ بثقة</h1><p id="sub"></p></header>
+<main id="app"></main>
+<nav id="nav"></nav>
+<script>
+"use strict";
+/* ============ DATA ============ */
+const FA="\u064E",DA="\u064F",KA="\u0650",SU="\u0652",SH="\u0651",TF="\u064B",TD="\u064C",TK="\u064D",ZWJ="\u200D";
+// [letter, name, joinsToNext, sample word, group]
+const LET=[
+["ا","أَلِف",0,"أَسَد","ا"],["ب","بَاء",1,"بَطَّة","ب"],["ت","تَاء",1,"تُفَّاح","ب"],["ث","ثَاء",1,"ثَعْلَب","ب"],
+["ج","جِيم",1,"جَمَل","ج"],["ح","حَاء",1,"حِصَان","ج"],["خ","خَاء",1,"خَرُوف","ج"],
+["د","دَال",0,"دُبّ","د"],["ذ","ذَال",0,"ذُرَة","د"],["ر","رَاء",0,"رُمَّان","ر"],["ز","زَاي",0,"زَهْرَة","ر"],
+["س","سِين",1,"سَمَكَة","س"],["ش","شِين",1,"شَمْس","س"],["ص","صَاد",1,"صَقْر","ص"],["ض","ضَاد",1,"ضِفْدَع","ص"],
+["ط","طَاء",1,"طَائِر","ط"],["ظ","ظَاء",1,"ظَرْف","ط"],["ع","عَيْن",1,"عِنَب","ع"],["غ","غَيْن",1,"غُرَاب","ع"],
+["ف","فَاء",1,"فِيل","ف"],["ق","قَاف",1,"قَمَر","ف"],["ك","كَاف",1,"كِتَاب","ك"],["ل","لَام",1,"لَيْمُون","ك"],
+["م","مِيم",1,"مَوْز","م"],["ن","نُون",1,"نَجْمَة","ب"],["ه","هَاء",1,"هِلَال","هـ"],["و","وَاو",0,"وَرْدَة","و"],["ي","يَاء",1,"يَد","ب"]
+];
+const SIM=[["ب","ت","ث","ن","ي"],["ج","ح","خ"],["د","ذ"],["ر","ز"],["س","ش"],["ص","ض"],["ط","ظ"],["ع","غ"],["ف","ق"],["ك","ل"],["م","ه","و","ا"]];
+const HAR=[[FA,"فَتْحَة"],[DA,"ضَمَّة"],[KA,"كَسْرَة"]];
+const NON=["ا","د","ذ","ر","ز","و"]; // لا تتصل بما بعدها
+const L1=LET.map(l=>({t:l[0],s:l[1],k:"L"+l[0],letter:l}));
+const BASE=LET.filter(l=>l[0]!="ا");
+const L2=[];HAR.forEach(h=>BASE.forEach(l=>L2.push({t:l[0]+h[0],s:l[0]+h[0],k:"S"+l[0]+h[0]})));
+const L3=[];[[FA,"ا"],[DA,"و"],[KA,"ي"]].forEach(h=>BASE.forEach(l=>L3.push({t:l[0]+h[0]+h[1],s:l[0]+h[0]+h[1],k:"M"+l[0]+h[0]+h[1]})));
+const SUK="بَلْ مِنْ عَنْ كَمْ هَلْ قَدْ لَمْ قُمْ نَمْ سِرْ بِعْ كُلْ خُذْ صَبْ ثَمْ جِدْ حَقْ رَدْ زُرْ طِرْ يَدْ فَمْ شَمْ دَمْ سَمْ تُبْ لَنْ مَنْ أَنْ".split(" ");
+const L4=SUK.map(x=>({t:x,s:x,k:"K"+x}));
+const TL="بتجدسكلمنهف قرزع".replace(" ","").split("");
+const L5=[];TL.forEach(c=>[TF,TD,TK].forEach(h=>L5.push({t:c+h+(h==TF?"ا":""),s:c+h,k:"T"+c+h})));
+const L6=[];TL.forEach(c=>HAR.forEach(h=>L6.push({t:c+SH+h[0],s:c+SH+h[0],k:"H"+c+h[0]})));
+function W(str){return str.trim().split(/\s+/).map(x=>{const p=x.split("|");return {t:p.join(""),s:p.join(""),p:p,k:"W"+p.join("")}})}
+const L7=W("قَ|مَرْ شَ|جَرْ وَ|لَدْ بَ|لَدْ سَ|مَكْ نَ|هَرْ حَ|جَرْ جَ|بَلْ بَ|قَرْ ذَ|هَبْ عَ|سَلْ كَ|تَ|بَ فَ|تَ|حَ ذَ|هَ|بَ جَ|لَ|سَ دَ|رَ|سَ لَ|عِ|بَ شَ|رِ|بَ كَ|ثُ|رَ نَ|ظَ|رَ");
+const L8=W("بَابْ نُو|رْ فِيلْ بَا|بَا مَا|مَا كِ|تَابْ حِ|مَارْ طَ|رِيقْ جَ|مِيلْ كَ|بِيرْ صَ|غِيرْ كَ|رِيمْ طَ|وِيلْ قَ|مِيصْ دَ|جَاجْ سَ|مَاعْ بُو|قْ عَ|صَا نَا|رْ دِي|كْ سَ|لَا|مْ");
+const L9=W("بِنْ|تْ شَمْ|سْ زَهْ|رَةْ حَقْ|لْ كَلْ|بْ قَلْ|بْ نَجْ|مْ يَوْ|مْ مَكْ|تَبْ مَسْ|جِدْ بُسْ|تَانْ مَدْ|رَ|سَةْ حَدِي|قَةْ مِلْ|حْ كُرْ|سِيْ جَنْ|بِيْ بَيْ|تْ لَيْ|لْ سُنْ|بُلْ مِفْ|تَاحْ مِسْ|مَارْ");
+const L10=W("كِ|تَا|بً|ا وَ|لَ|دٌ بَيْ|تٍ طَا|لِ|بٌ كَ|بِي|رٌ جَ|مِي|لٌ مَدْ|رَ|سَ|ةً شَ|جَ|رَ|ةٌ رَ|جُ|لٌ فِي بَيْ|تٍ دُبّ جَدّ حَقّ أُمّ سُلّمْ قِطّ|ةْ جَنّ|ةْ مُ|عَلّ|مْ مُ|دَرّ|سْ كُرّا|سَةْ سَرِيرْ");
+const L11=W("الشَّمْ|سُ الْقَ|مَ|رُ الْبَا|بُ الْوَ|لَ|دُ الْكِ|تَا|بُ الْجَ|مَ|لُ النَّ|هْ|رُ الْمَدْ|رَ|سَةُ الْحَدِي|قَةُ الْفَصْ|لُ الْمُ|عَلّ|مُ");
+const SENT=[
+"هَذَا بَيْتٌ كَبِيرٌ.","فَتَحَ أَحْمَدُ الْبَابَ.","ذَهَبَ الْوَلَدُ إِلَى الْمَدْرَسَةِ.","يَقْرَأُ بِيشُوي الْكِتَابَ.",
+"الشَّمْسُ جَمِيلَةٌ فِي الصَّبَاحِ.","أُحِبُّ أُمِّي وَأَبِي.","جَلَسَ الطَّالِبُ فِي الْفَصْلِ.","فِي الْحَدِيقَةِ شَجَرَةٌ كَبِيرَةٌ.",
+"سَمِعَ الْوَلَدُ صَوْتَ الْجَرَسِ.","يَلْعَبُ الْأَطْفَالُ فِي الْمَلْعَبِ.","كَتَبَ الطَّالِبُ الدَّرْسَ.","اللَّهُ يُحِبُّ الْجَمِيعَ."
+].map(s=>({t:s,s:s,p:s.replace(/\.$/,"").split(" "),k:"X"+s,sent:1}));
+const LEVELS=[
+{id:1,title:"الحروف وأشكالها",desc:"٢٨ حرف: اسمه وشكله أول/وسط/آخر الكلمة",items:L1,letters:1},
+{id:2,title:"الفتحة والضمة والكسرة",desc:"بَ بُ بِ: الحرف مع الحركة",items:L2},
+{id:3,title:"المدود",desc:"بَا بُو بِي: الألف والواو والياء",items:L3},
+{id:4,title:"السكون",desc:"بَلْ مِنْ قُمْ: حرف ساكن في الآخر",items:L4},
+{id:5,title:"التنوين",desc:"بً بٌ بٍ",items:L5},
+{id:6,title:"الشدة",desc:"بَّ بُّ بِّ: حرف مكرر",items:L6},
+{id:7,title:"كلمات سهلة",desc:"كلمات قصيرة مقطّعة",items:L7},
+{id:8,title:"كلمات فيها مد",desc:"كِتَاب، طَرِيق، جَمِيل",items:L8},
+{id:9,title:"كلمات فيها سكون",desc:"شَمْس، مَدْرَسَة، بُسْتَان",items:L9},
+{id:10,title:"تنوين وشدة",desc:"وَلَدٌ، مُعَلِّم، قِطَّة",items:L10},
+{id:11,title:"ال التعريف",desc:"الشَّمْسُ، الْقَمَرُ",items:L11},
+{id:12,title:"جمل قصيرة",desc:"اقرأ جملة كلمة كلمة",items:SENT}
+];
+const PRAISE=["برافو! 👏","ممتاز! 🌟","شاطر! 💪","كمّل كده! 🔥","تمام جدًا! ✅"];
+/* ============ STATE ============ */
+const KEY="qr_arabic_v1";
+let S;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ S=Object.assign({photos:[],name:"",stats:{},days:{},stumble:{},rate:0.7,level:1},S||{})}
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+load();
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const st=k=>S.stats[k]||(S.stats[k]={ok:0,bad:0,last:0});
+const mastered=it=>{const x=S.stats[it.k];return x&&x.ok>=2&&x.last==1};
+const lvPct=lv=>Math.round(100*lv.items.filter(mastered).length/lv.items.length);
+function curLevel(){for(const lv of LEVELS){if(lvPct(lv)<80)return lv}return LEVELS[LEVELS.length-1]}
+function streak(){let n=0;const d=new Date();if(!S.days[today()])d.setDate(d.getDate()-1);
+ for(;;){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(S.days[k]){n++;d.setDate(d.getDate()-1)}else break}return n}
+/* ============ AUDIO ============ */
+let voice=null,voices=[];
+function pickVoice(){voices=(window.speechSynthesis?speechSynthesis.getVoices():[]);
+ const ar=voices.filter(v=>/^ar/i.test(v.lang));
+ voice=ar.find(v=>/ar[-_]EG/i.test(v.lang))||ar.find(v=>/ar[-_]SA/i.test(v.lang))||ar[0]||null}
+if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=()=>{pickVoice();if(typeof render=="function"&&view=="home")render()}}
+function say(text,slow){if(!window.speechSynthesis)return false;
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=voice?voice.lang:"ar-SA";if(voice)u.voice=voice;
+ u.rate=slow?Math.max(.35,S.rate-.25):S.rate;speechSynthesis.speak(u);return true}catch(e){return false}}
+const audioOK=()=>!!window.speechSynthesis&&!!voice;
+/* ============ HELPERS ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function forms(l){const c=l[0],nj=!l[2];return[["منفصل",c],["أول الكلمة",nj?null:c+ZWJ],["وسط الكلمة",nj?null:ZWJ+c+ZWJ],["آخر الكلمة",ZWJ+c]]}
+function bigHTML(it,sep){
+ if(it.p){const cls=it.sent?"big sent":(it.t.length>7?"big long":"big");
+  return `<div class="${cls}${sep?" sep":""}" id="big">`+it.p.map((x,i)=>`<span class="sy c${i%5}" data-i="${i}">${esc(x)}</span>`+(it.sent&&!sep?" ":"")).join("")+`</div>`}
+ return `<div class="big" id="big">${esc(it.t)}</div>`}
+function addPhotos(inp){[...inp.files].slice(0,12).forEach(f=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),m=360,k=Math.min(1,m/Math.max(im.width,im.height));c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.photos.push(c.toDataURL('image/jpeg',.7));try{save()}catch(e){S.photos.pop();alert('المساحة ممتلئة')}render()};im.src=r.result};r.readAsDataURL(f)});inp.value=''}
+const rndPhoto=()=>S.photos.length?S.photos[Math.random()*S.photos.length|0]:"";
+/* ============ VIEWS ============ */
+let view="home",sess=null;
+const TABS=[["home","🏠","الرئيسية"],["levels","🪜","الدروس"],["letters","🔤","الحروف"],["words","📌","كلماتي"],["parent","👨‍👩‍👦","ولي الأمر"]];
+function render(){
+ $("#sub").textContent=S.name?`أهلاً يا ${S.name} 👋`:"تدرّب كل يوم ١٠ دقايق، وهتتحسن";
+ $("#nav").innerHTML=TABS.map(t=>`<button class="${view==t[0]?"on":""}" onclick="go('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("");
+ $("#nav").style.display=sess?"none":"flex";
+ ({home:vHome,levels:vLevels,letters:vLetters,words:vWords,parent:vParent,practice:vPractice,done:vDone})[view]();
+ window.scrollTo(0,0)}
+function go(v){view=v;sess=null;render()}
+function audioBanner(){return audioOK()?"":`<div class="banner">🔇 الصوت العربي مش متاح على الموبايل ده. التطبيق شغّال بدونه، لكن للسماع روح إعدادات الموبايل &gt; إمكانية الوصول &gt; تحويل النص إلى كلام، ونزّل صوت اللغة العربية. بعدها افتح التطبيق تاني.</div>`}
+function vHome(){
+ const cl=curLevel(),td=S.days[today()],pend=Object.values(S.stumble).filter(w=>w.good<2).length;
+ $("#app").innerHTML=`${audioBanner()}
+ ${S.name?"":`<div class="card"><h2>اسمك إيه؟</h2><input id="nm" style="width:100%;padding:12px;font-size:18px;border-radius:12px;border:1px solid #cfe0de;font-family:inherit" placeholder="اكتب اسمك"><button class="btn small" style="margin-top:8px" onclick="S.name=$('#nm').value.trim();save();render()">حفظ</button></div>`}
+ <div class="card">${S.photos.length?`<img class="hero" src="${rndPhoto()}">`:""}<div class="stat"><div><b>${streak()}</b><small>أيام ورا بعض 🔥</small></div><div><b>${td?td.n:0}</b><small>تمارين النهارده</small></div><div><b>${pend}</b><small>كلمات محتاجة مراجعة</small></div></div></div>
+ <div class="card"><h2>تمرين النهارده</h2><p class="hint" style="text-align:right">حوالي ١٠ دقايق: من درس «${cl.title}» + مراجعة كلماتك الصعبة</p>
+ <button class="btn" onclick="startToday()">▶ ابدأ تمرين النهارده</button></div>
+ <div class="card"><h2>مستواك الحالي</h2><div class="lv cur" onclick="startLevel(${cl.id})"><div class="n">${cl.id}</div><div class="t"><b>${cl.title}</b><small>${cl.desc}</small><div class="bar" style="margin-top:6px"><i style="width:${lvPct(cl)}%"></i></div></div></div></div>
+ <div class="card"><h2>📷 صوري</h2><p class="hint" style="text-align:right">الصور بتتحفظ على الموبايل ده بس ومش بتترفع على النت.</p>${S.photos.length?`<div class="ph">${S.photos.map((p,i)=>`<img src="${p}" onclick="if(confirm('مسح الصورة؟')){S.photos.splice(${i},1);save();render()}">`).join("")}</div>`:""}<label class="btn sec" style="text-align:center">➕ أضف صورة من الموبايل<input type="file" accept="image/*" multiple hidden onchange="addPhotos(this)"></label></div>
+ <div class="card"><h2>🎯 تمرين تمييز الحروف</h2><p class="hint" style="text-align:right">شوف الحرف في وسط الكلمة واختار هو مين</p><button class="btn sec" onclick="startQuiz()">ابدأ</button></div>`}
+function vLevels(){
+ $("#app").innerHTML=`<div class="card"><h2>الدروس بالترتيب</h2>`+LEVELS.map(lv=>`<div class="lv ${curLevel().id==lv.id?"cur":""}" onclick="startLevel(${lv.id})"><div class="n">${lv.id}</div><div class="t"><b>${lv.title}</b><small>${lv.desc}</small><div class="bar" style="margin-top:6px"><i style="width:${lvPct(lv)}%"></i></div></div><div>${lvPct(lv)}٪</div></div>`).join("")+`</div>`}
+function vLetters(){
+ let h=`<div class="card"><h2>الحروف الهجائية</h2><p class="hint" style="text-align:right">اضغط على أي حرف لتشوف شكله وتسمعه. الأخضر = حفظته.</p>`;
+ SIM.forEach(g=>{h+=`<h3>حروف شكلها قريب</h3><div class="grid">`+g.map(c=>{const l=LET.find(x=>x[0]==c);return `<div class="lt ${mastered({k:"L"+c})?"m":""}" onclick="showLetter('${c}')">${c}<small>${l[1]}</small></div>`}).join("")+`</div>`});
+ $("#app").innerHTML=h+`</div>`}
+function showLetter(c){const l=LET.find(x=>x[0]==c);
+ const m=document.createElement("div");m.className="modal";m.onclick=e=>{if(e.target==m)m.remove()};
+ m.innerHTML=`<div><div class="big" style="min-height:100px">${c}</div><p class="hint" style="font-size:20px">${l[1]}</p>
+ <div class="forms">${forms(l).map(f=>`<div>${f[1]?esc(f[1]):"<span style='font-size:13px'>لا يتصل</span>"}<small>${f[0]}</small></div>`).join("")}</div>
+ <h3>الحرف مع الحركات</h3><div class="forms" style="grid-template-columns:repeat(3,1fr)">${HAR.map(h=>`<div onclick="say('${c+h[0]}')">${c+h[0]}<small>${h[1]}</small></div>`).join("")}</div>
+ <h3>كلمة فيها الحرف</h3><div class="big long" style="min-height:70px;font-size:48px" onclick="say('${l[3]}')">${l[3]}</div>
+ <div class="row" style="margin-top:10px"><button class="btn" onclick="say('${l[1]}')">🔊 اسم الحرف</button><button class="btn sec" onclick="say('${l[3]}',1)">🔊 الكلمة</button></div></div>`;
+ document.body.appendChild(m)}
+function vWords(){
+ const list=Object.entries(S.stumble).sort((a,b)=>b[1].count-a[1].count);
+ const act=list.filter(x=>x[1].good<2),done=list.filter(x=>x[1].good>=2);
+ $("#app").innerHTML=`<div class="card"><h2>كلماتي الصعبة (${act.length})</h2>${act.length?`<p class="hint" style="text-align:right">اضغط على الكلمة لتسمعها.</p>`+act.map(x=>`<span class="w" onclick="say('${x[0]}',1)">${esc(x[0])}</span>`).join("")+`<button class="btn" style="margin-top:12px" onclick="startReview()">▶ راجعها دلوقتي</button>`:`<p class="hint">مفيش كلمات صعبة لسه. أي كلمة تغلط فيها هتتسجل هنا تلقائي.</p>`}</div>
+ ${done.length?`<div class="card"><h2>كلمات اتقنتها ✅ (${done.length})</h2>${done.map(x=>`<span class="pill">${esc(x[0])}</span>`).join("")}</div>`:""}`}
+/* ---- parent ---- */
+function last14(){const a=[];const d=new Date();d.setDate(d.getDate()-13);for(let i=0;i<14;i++){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");a.push([k,S.days[k]?S.days[k].n:0,d.getDay()]);d.setDate(d.getDate()+1)}return a}
+function report(){const cl=curLevel(),dd=Object.keys(S.days).length,tot=Object.values(S.days).reduce((a,b)=>a+b.n,0),ok=Object.values(S.days).reduce((a,b)=>a+b.ok,0);
+ const hard=Object.entries(S.stumble).filter(x=>x[1].good<2).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(x=>x[0]);
+ return `تقرير القراءة${S.name?" - "+S.name:""}\nأيام التدريب: ${dd} | الأيام المتتالية: ${streak()}\nإجمالي التمارين: ${tot} | الصح: ${tot?Math.round(100*ok/tot):0}٪\nالدرس الحالي: ${cl.id}) ${cl.title} (${lvPct(cl)}٪)\nكلمات صعبة: ${hard.join("، ")||"لا يوجد"}`}
+function vParent(){
+ const l14=last14(),mx=Math.max(5,...l14.map(x=>x[1])),dn=["ح","ن","ث","ر","خ","ج","س"];
+ $("#app").innerHTML=`<div class="card"><h2>👨‍👩‍👦 صفحة ولي الأمر</h2>
+ <div class="stat"><div><b>${Object.keys(S.days).length}</b><small>أيام تدريب</small></div><div><b>${streak()}</b><small>متتالية</small></div><div><b>${Object.values(S.stumble).filter(w=>w.good<2).length}</b><small>كلمات صعبة</small></div></div>
+ <h3>آخر ١٤ يوم (عدد التمارين)</h3><div class="days">${l14.map(x=>`<div class="${x[0]==today()?"t":""}" style="height:${Math.max(4,80*x[1]/mx)}px"></div>`).join("")}</div><div class="dl">${l14.map(x=>`<span>${dn[x[2]]}</span>`).join("")}</div></div>
+ <div class="card"><h2>التقدم في الدروس</h2>${LEVELS.map(lv=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${lv.id}) ${lv.title}</span><span>${lvPct(lv)}٪</span></div><div class="bar"><i style="width:${lvPct(lv)}%"></i></div></div>`).join("")}</div>
+ <div class="card"><h2>أصعب الكلمات</h2>${Object.entries(S.stumble).filter(x=>x[1].good<2).sort((a,b)=>b[1].count-a[1].count).slice(0,12).map(x=>`<span class="w">${esc(x[0])} <small style="font-size:13px">×${x[1].count}</small></span>`).join("")||"<p class='hint'>لا يوجد</p>"}</div>
+ <div class="card"><h2>إرسال تقرير</h2><pre style="white-space:pre-wrap;font-family:inherit;background:#f6faf9;padding:10px;border-radius:12px;font-size:14px">${esc(report())}</pre>
+ <a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(report())}">إرسال على واتساب</a></div>
+ <div class="card"><h2>إعدادات</h2><label>سرعة الصوت</label><input type="range" min="0.4" max="1" step="0.1" value="${S.rate}" onchange="S.rate=+this.value;save()">
+ <button class="btn sec" style="margin-top:8px" onclick="say('كِتَاب')">🔊 جرّب الصوت</button>
+ <p class="hint">${audioOK()?"الصوت العربي شغّال: "+esc(voice.name):"الصوت العربي مش متاح على الجهاز ده"}</p>
+ <h3>نسخة احتياطية</h3><button class="btn sec" onclick="exp()">نسخ البيانات</button><textarea id="bk" placeholder="الصق نسخة هنا للاستعادة"></textarea><button class="btn sec" style="margin-top:6px" onclick="imp()">استعادة</button>
+ <button class="btn bad" style="margin-top:14px" onclick="if(confirm('مسح كل التقدم؟')){localStorage.removeItem(KEY);load();render()}">مسح كل شيء</button></div>`}
+function exp(){const t=JSON.stringify(S);$("#bk").value=t;$("#bk").select();try{navigator.clipboard.writeText(t)}catch(e){}}
+function imp(){try{const o=JSON.parse($("#bk").value);if(!o.stats)throw 0;S=o;save();render();alert("تمت الاستعادة")}catch(e){alert("النسخة غير صالحة")}}
+/* ============ PRACTICE ============ */
+function pickItems(lv,n){
+ const items=lv.items.slice();
+ const w=items.map(it=>{const x=S.stats[it.k];return {it,w:!x?3:mastered(it)?0.4:(x.last==0?4:2)}});
+ const out=[];while(out.length<n&&w.length){const tot=w.reduce((a,b)=>a+b.w,0);let r=Math.random()*tot,i=0;for(;i<w.length-1;i++){r-=w[i].w;if(r<=0)break}out.push(w[i].it);w.splice(i,1)}return out}
+function stumbleItems(n){return shuffle(Object.entries(S.stumble).filter(x=>x[1].good<2)).slice(0,n).map(x=>x[1].item)}
+function startToday(){const lv=curLevel();const rev=stumbleItems(4);const main=pickItems(lv,12-rev.length);
+ let q=shuffle(main.concat(rev));sess={q,i:0,ok:0,bad:0,lv:lv.id,mode:"read",joined:false,t0:Date.now()};view="practice";render()}
+function startLevel(id){const lv=LEVELS.find(x=>x.id==id);sess={q:pickItems(lv,10),i:0,ok:0,bad:0,lv:id,mode:"read",joined:false,t0:Date.now()};view="practice";render()}
+function startReview(){const q=stumbleItems(10);if(!q.length)return;sess={q,i:0,ok:0,bad:0,lv:0,mode:"read",joined:false,t0:Date.now()};view="practice";render()}
+function startQuiz(){const q=shuffle(BASE.concat(LET.slice(0,1))).slice(0,10);sess={q:q.map(l=>({quiz:l})),i:0,ok:0,bad:0,lv:0,mode:"quiz",t0:Date.now()};view="practice";render()}
+function vPractice(){
+ if(sess.i>=sess.q.length){return finish()}
+ const it=sess.q[sess.i],pc=100*sess.i/sess.q.length;
+ const head=`<div class="top"><button class="x" onclick="if(confirm('تخرج من التمرين؟'))go('home')">✕</button><div class="bar"><i style="width:${pc}%"></i></div><span>${sess.i+1}/${sess.q.length}</span></div>`;
+ if(it.quiz)return quizView(head,it.quiz);
+ const isW=!!it.p,letter=it.letter;
+ let body=head+`<div class="card">`+bigHTML(it,isW&&!sess.joined&&!it.sent)+
+ (letter?`<div class="hint" style="font-size:20px">${letter[1]}</div><div class="forms" style="margin-bottom:10px">${forms(letter).map(f=>`<div>${f[1]?esc(f[1]):"–"}<small>${f[0]}</small></div>`).join("")}</div>`:"")+
+ (isW&&!it.sent&&it.p.length>1?`<p class="hint">${sess.joined?"الكلمة كاملة":"اقرأ كل مقطع لوحده، وبعدين اضغط «اجمع»"}</p>`:`<p class="hint">${it.sent?"اقرأ الجملة كلمة كلمة، وبعدين كلها":"اقرأ بصوت عالي"}</p>`)+
+ `<div class="row" style="margin-bottom:10px"><button class="btn sec" onclick="say(sess.q[sess.i].s)">🔊 اسمع</button><button class="btn sec" onclick="say(sess.q[sess.i].s,1)">🐢 بطيء</button>${isW&&!it.sent&&it.p.length>1&&!sess.joined?`<button class="btn sec" onclick="sess.joined=true;render()">🔗 اجمع</button>`:""}</div>
+ <div class="row"><button class="btn bad" onclick="grade(0)">✗ غلطت</button><button class="btn ok" onclick="grade(1)">✓ قريتها صح</button></div></div>`;
+ $("#app").innerHTML=body;
+ document.querySelectorAll(".sy").forEach(e=>e.onclick=()=>say(it.p[+e.dataset.i],1));
+ if(!audioOK()){}}
+function grade(good){
+ const it=sess.q[sess.i],x=st(it.k);
+ if(good){x.ok++;x.last=1;sess.ok++;const sv=S.stumble[it.t];if(sv){sv.good++}}
+ else{x.bad++;x.last=0;sess.bad++;const sv=S.stumble[it.t];if(sv){sv.count++;sv.good=0}else if(it.p||it.k[0]!="L"){S.stumble[it.t]={count:1,good:0,item:{t:it.t,s:it.s,p:it.p,k:it.k,sent:it.sent}}}else{S.stumble[it.t]={count:1,good:0,item:{t:it.t,s:it.s,k:it.k,letter:it.letter}}}
+  if(sess.mode=="read"&&sess.q.length<18&&!it._r){const c=Object.assign({},it,{_r:1});sess.q.splice(Math.min(sess.i+3,sess.q.length),0,c)}}
+ save();sess.i++;sess.joined=false;render()}
+function quizView(head,l){
+ const g=SIM.find(a=>a.includes(l[0]))||[l[0]];
+ let pool=g.filter(c=>c!=l[0]);const others=shuffle(LET.map(x=>x[0]).filter(c=>c!=l[0]&&!pool.includes(c)));
+ const opts=shuffle([l[0]].concat(pool.slice(0,2),others).slice(0,4).concat(pool.length<1?[]:[]));
+ const fs=forms(l).filter(f=>f[1]&&f[0]!="منفصل");const f=fs[Math.random()*fs.length|0]||["",l[0]];
+ const sample="بـ"; // shape displayed in position
+ $("#app").innerHTML=head+`<div class="card"><p class="hint">أنهي حرف ده؟ (${f[0]||"منفصل"})</p><div class="big">${esc(f[1])}</div><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:12px">${opts.map(c=>`<div class="opt" data-c="${c}">${c}</div>`).join("")}</div></div>`;
+ document.querySelectorAll(".opt").forEach(e=>e.onclick=()=>{if(sess.lock)return;sess.lock=1;const right=e.dataset.c==l[0];e.classList.add(right?"ok":"no");
+  if(!right)document.querySelector(`.opt[data-c="${l[0]}"]`).classList.add("ok");
+  const x=st("L"+l[0]);if(right){x.ok++;x.last=1;sess.ok++}else{x.bad++;x.last=0;sess.bad++}save();
+  setTimeout(()=>{sess.lock=0;sess.i++;render()},right?700:1400)})}
+function finish(){
+ const d=S.days[today()]||(S.days[today()]={n:0,ok:0,min:0});d.n+=sess.ok+sess.bad;d.ok+=sess.ok;d.min+=Math.round((Date.now()-sess.t0)/60000);save();
+ view="done";render()}
+function vDone(){
+ const tot=sess.ok+sess.bad,pr=PRAISE[Math.random()*PRAISE.length|0];const s=sess;
+ $("#app").innerHTML=`<div class="card">${S.photos.length?`<img class="hero" src="${rndPhoto()}">`:""}<div class="praise">${pr}</div><h2 style="text-align:center">خلصت التمرين</h2>
+ <div class="stat"><div><b>${s.ok}</b><small>صح</small></div><div><b>${s.bad}</b><small>محتاج تدريب</small></div><div><b>${streak()}</b><small>أيام متتالية</small></div></div>
+ <button class="btn" style="margin-top:14px" onclick="sess=null;go('home')">رجوع للرئيسية</button>
+ ${s.bad?`<button class="btn sec" style="margin-top:8px" onclick="sess=null;startReview()">راجع الكلمات اللي غلطت فيها</button>`:""}</div>`;
+ document.getElementById("nav").style.display="none";}
+render();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>

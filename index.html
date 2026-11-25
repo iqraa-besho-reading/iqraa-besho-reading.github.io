@@ -26,7 +26,7 @@ h3{margin:12px 0 6px;font-size:15px;color:var(--mut)}
 .btn.small{display:inline-block;width:auto;padding:9px 14px;font-size:15px;border-radius:12px}
 .row{display:flex;gap:10px}.row>*{flex:1}
 nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #dbe7e5;padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav button{flex:1;border:0;background:none;padding:9px 2px 8px;font-size:12px;color:var(--mut);font-family:inherit}
+nav button{flex:1;border:0;background:none;padding:9px 0 8px;font-size:11px;color:var(--mut);font-family:inherit}
 nav button b{display:block;font-size:20px;margin-bottom:1px}
 nav button.on{color:var(--g);font-weight:700}
 .bar{height:12px;background:#dcebe9;border-radius:8px;overflow:hidden}
@@ -161,14 +161,14 @@ function addPhotos(inp){[...inp.files].slice(0,12).forEach(f=>{const r=new FileR
 const rndPhoto=()=>S.photos.length?S.photos[Math.random()*S.photos.length|0]:"";
 /* ============ VIEWS ============ */
 let view="home",sess=null;
-const TABS=[["home","🏠","الرئيسية"],["levels","🪜","الدروس"],["letters","🔤","الحروف"],["words","📌","كلماتي"],["parent","👨‍👩‍👦","ولي الأمر"]];
+const TABS=[["home","🏠","الرئيسية"],["levels","🪜","الدروس"],["letters","🔤","الحروف"],["games","🎮","ألعاب"],["words","📌","كلماتي"],["parent","👨‍👩‍👦","ولي الأمر"]];
 function render(){
  $("#sub").textContent=S.name?`أهلاً يا ${S.name} 👋`:"تدرّب كل يوم ١٠ دقايق، وهتتحسن";
  $("#nav").innerHTML=TABS.map(t=>`<button class="${view==t[0]?"on":""}" onclick="go('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("");
- $("#nav").style.display=sess?"none":"flex";
- ({home:vHome,levels:vLevels,letters:vLetters,words:vWords,parent:vParent,practice:vPractice,done:vDone})[view]();
+ $("#nav").style.display=(sess||(typeof G!="undefined"&&G))?"none":"flex";
+ ({home:vHome,levels:vLevels,letters:vLetters,words:vWords,games:vGames,parent:vParent,practice:vPractice,done:vDone})[view]();
  window.scrollTo(0,0)}
-function go(v){view=v;sess=null;render()}
+function go(v){if(typeof G!="undefined"&&G){clearInterval(G.tm);clearInterval(G.sp);clearTimeout(G.to);G=null}view=v;sess=null;render()}
 function audioBanner(){return audioOK()?"":`<div class="banner">🔇 الصوت العربي مش متاح على الموبايل ده. التطبيق شغّال بدونه، لكن للسماع روح إعدادات الموبايل &gt; إمكانية الوصول &gt; تحويل النص إلى كلام، ونزّل صوت اللغة العربية. بعدها افتح التطبيق تاني.</div>`}
 function vHome(){
  const cl=curLevel(),td=S.days[today()],pend=Object.values(S.stumble).filter(w=>w.good<2).length;
@@ -207,7 +207,7 @@ function report(){const cl=curLevel(),dd=Object.keys(S.days).length,tot=Object.v
 function vParent(){
  const l14=last14(),mx=Math.max(5,...l14.map(x=>x[1])),dn=["ح","ن","ث","ر","خ","ج","س"];
  $("#app").innerHTML=`<div class="card"><h2>👨‍👩‍👦 صفحة ولي الأمر</h2>
- <div class="stat"><div><b>${Object.keys(S.days).length}</b><small>أيام تدريب</small></div><div><b>${streak()}</b><small>متتالية</small></div><div><b>${Object.values(S.stumble).filter(w=>w.good<2).length}</b><small>كلمات صعبة</small></div></div>
+ <div class="stat"><div><b>${Object.keys(S.days).length}</b><small>أيام تدريب</small></div><div><b>${streak()}</b><small>متتالية</small></div><div><b>${Object.values(S.stumble).filter(w=>w.good<2).length}</b><small>كلمات صعبة</small></div><div><b>${S.pts||0}</b><small>نقاط الألعاب</small></div></div>
  <h3>آخر ١٤ يوم (عدد التمارين)</h3><div class="days">${l14.map(x=>`<div class="${x[0]==today()?"t":""}" style="height:${Math.max(4,80*x[1]/mx)}px"></div>`).join("")}</div><div class="dl">${l14.map(x=>`<span>${dn[x[2]]}</span>`).join("")}</div></div>
  <div class="card"><h2>التقدم في الدروس</h2>${LEVELS.map(lv=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${lv.id}) ${lv.title}</span><span>${lvPct(lv)}٪</span></div><div class="bar"><i style="width:${lvPct(lv)}%"></i></div></div>`).join("")}</div>
  <div class="card"><h2>أصعب الكلمات</h2>${Object.entries(S.stumble).filter(x=>x[1].good<2).sort((a,b)=>b[1].count-a[1].count).slice(0,12).map(x=>`<span class="w">${esc(x[0])} <small style="font-size:13px">×${x[1].count}</small></span>`).join("")||"<p class='hint'>لا يوجد</p>"}</div>
@@ -272,6 +272,71 @@ function vDone(){
  <button class="btn" style="margin-top:14px" onclick="sess=null;go('home')">رجوع للرئيسية</button>
  ${s.bad?`<button class="btn sec" style="margin-top:8px" onclick="sess=null;startReview()">راجع الكلمات اللي غلطت فيها</button>`:""}</div>`;
  document.getElementById("nav").style.display="none";}
+/* ============ GAMES ============ */
+let G=null;
+const WORDS1=[].concat(L7,L8,L9,L10,L11).filter(w=>w.p.length>=2&&w.p.length<=4);
+const HARS=[FA,DA,KA,SU,SH];
+function addPts(n){S.pts=(S.pts||0)+n;save()}
+function best(g,sc){S.best=S.best||{};if(sc>(S.best[g]||0)){S.best[g]=sc;save();return true}return false}
+function vGames(){
+ const b=S.best||{};
+ const gm=[["balloons","🎈","بالونات الحروف","اضغط على الحرف المطلوب قبل ما يطير"],["build","🧩","ركّب الكلمة","رتّب المقاطع عشان تتكون الكلمة"],["memory","🃏","لعبة الذاكرة","وصّل شكل الحرف في أول الكلمة بشكله لوحده"],["flash","⚡","اللمحة السريعة","الكلمة بتظهر ثانيتين وتختفي، اختارها صح"]];
+ $("#app").innerHTML=`<div class="card"><h2>🎮 ألعاب</h2><p class="hint" style="text-align:right">نقاطك: <b>${S.pts||0}</b> ⭐ (كل لعبة بتديك نقاط وبتدرّبك على القراءة)</p>`+
+ gm.map(g=>`<div class="lv" onclick="startGame('${g[0]}')"><div class="n" style="background:none;font-size:30px">${g[1]}</div><div class="t"><b>${g[2]}</b><small>${g[3]}</small></div><div style="font-size:13px;color:var(--mut)">${b[g[0]]?"أحسن: "+b[g[0]]:""}</div></div>`).join("")+`</div>`}
+function startGame(n){G={n,sc:0};({balloons:gBalloons,build:gBuild,memory:gMemory,flash:gFlash})[n]();render2()}
+function render2(){$("#nav").style.display="none"}
+function gTop(title){return `<div class="top"><button class="x" onclick="endGame(1)">✕</button><b style="flex:1">${title}</b><span id="gsc">⭐ ${G.sc}</span></div>`}
+function setSc(d){G.sc=Math.max(0,G.sc+d);const e=$("#gsc");if(e)e.textContent="⭐ "+G.sc}
+function endGame(quiet){clearInterval(G&&G.tm);clearInterval(G&&G.sp);clearTimeout(G&&G.to);const g=G;G=null;if(!quiet&&g){addPts(g.sc);const nb=best(g.n,g.sc);S.days[today()]=S.days[today()]||{n:0,ok:0,min:0};S.days[today()].g=(S.days[today()].g||0)+1;save();
+ view="games";render();const m=document.createElement("div");m.className="modal";m.innerHTML=`<div style="text-align:center"><div class="praise">${nb?"رقم قياسي! 🏆":PRAISE[Math.random()*5|0]}</div><h2>جبت ${g.sc} نقطة</h2><button class="btn" onclick="this.closest('.modal').remove();startGame('${g.n}')">العب تاني</button><button class="btn sec" style="margin-top:8px" onclick="this.closest('.modal').remove()">رجوع</button></div>`;document.body.appendChild(m)}else{view="games";render()}}
+/* balloons */
+function gBalloons(){
+ const pool=L2.map(x=>x.t);G.t=30;G.tgt=null;
+ function newT(){G.tgt=pool[Math.random()*pool.length|0];$("#gt").textContent=G.tgt;say(G.tgt,1)}
+ $("#app").innerHTML=gTop("بالونات الحروف")+`<div class="card" style="padding:8px"><div style="text-align:center">اضغط على: <span id="gt" style="font-size:54px;font-family:'Noto Naskh Arabic',serif;color:var(--g)"></span> <span id="gtm" class="pill">30</span></div><div id="arena" style="position:relative;height:430px;overflow:hidden;background:linear-gradient(#dff3f0,#f6fffd);border-radius:14px"></div></div>
+ <style>@keyframes up{from{transform:translateY(0)}to{transform:translateY(-480px)}}.bl{position:absolute;bottom:-70px;width:70px;height:80px;border-radius:50% 50% 48% 48%;display:flex;align-items:center;justify-content:center;font-size:34px;font-family:"Noto Naskh Arabic",serif;color:#fff;animation:up linear forwards;box-shadow:inset -6px -6px 0 #0002}</style>`;
+ newT();const cols=["#e11d48","#0f766e","#c2410c","#6d28d9","#0369a1","#ca8a04"];
+ const sp=()=>{const ar=$("#arena");if(!ar)return;const same=Math.random()<.35;let t;
+  if(same)t=G.tgt;else{const c=pool.filter(x=>x!=G.tgt&&(x[0]==G.tgt[0]||x[1]==G.tgt[1]));t=c[Math.random()*c.length|0]}
+  const d=document.createElement("div");d.className="bl";d.textContent=t;d.style.background=cols[Math.random()*6|0];d.style.left=(Math.random()*(ar.clientWidth-70))+"px";d.style.animationDuration=(4+Math.random()*2)+"s";
+  d.onpointerdown=()=>{if(!G||d.dataset.x)return;d.dataset.x=1;if(t==G.tgt){setSc(1);d.style.background="#16a34a";d.textContent="✓"}else{setSc(-1);d.style.background="#555";d.textContent="✗";}setTimeout(()=>d.remove(),250)};
+  d.onanimationend=()=>d.remove();ar.appendChild(d)};
+ G.tm=setInterval(()=>{G.t--;const e=$("#gtm");if(e)e.textContent=G.t;if(G.t%10==0&&G.t>0)newT();if(G.t<=0)endGame()},1000);
+ G.sp=setInterval(sp,650);const o=endGame;
+}
+/* build */
+function gBuild(){G.i=0;G.q=shuffle(WORDS1).slice(0,8);buildRound()}
+function buildRound(){
+ if(G.i>=G.q.length)return endGame();
+ const w=G.q[G.i];G.pos=0;G.chips=shuffle(w.p.map((x,i)=>({x,i})));if(w.p.length>1&&G.chips.every((c,j)=>c.i==j))G.chips.reverse();
+ $("#app").innerHTML=gTop(`ركّب الكلمة (${G.i+1}/${G.q.length})`)+`<div class="card"><div class="big" id="slot" style="min-height:110px;font-size:60px"></div><p class="hint">اضغط المقاطع بالترتيب الصح</p><div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center" id="chips">${G.chips.map((c,j)=>`<div class="opt" style="padding:10px 18px;font-size:40px" data-j="${j}">${esc(c.x)}</div>`).join("")}</div><button class="btn sec small" style="margin:14px auto 0;display:block" onclick="say(G.q[G.i].s,1)">🔊 اسمع الكلمة</button></div>`;
+ const slot=$("#slot");let mist=0;
+ document.querySelectorAll("#chips .opt").forEach(e=>e.onclick=()=>{const c=G.chips[+e.dataset.j];if(c.i==G.pos){e.style.visibility="hidden";slot.innerHTML+=`<span class="sy c${G.pos%5}">${esc(c.x)}</span>`;G.pos++;if(G.pos==w.p.length){setSc(mist?1:3);say(w.s);setTimeout(()=>{G.i++;buildRound()},900)}}
+  else{mist++;e.classList.add("no");setTimeout(()=>e.classList.remove("no"),400);if(mist==1&&!S.stumble[w.t])S.stumble[w.t]={count:1,good:0,item:{t:w.t,s:w.s,p:w.p,k:w.k}};save()}})}
+/* memory */
+function gMemory(){
+ const ls=shuffle(LET.filter(l=>l[2])).slice(0,6);G.cards=shuffle(ls.flatMap(l=>[{id:l[0],t:l[0],k:0},{id:l[0],t:ZWJ+l[0]+ZWJ,k:1}]));G.open=[];G.found=0;G.lock=0;G.moves=0;
+ $("#app").innerHTML=gTop("لعبة الذاكرة")+`<div class="card"><p class="hint">وصّل الحرف وهو لوحده بنفس الحرف وهو وسط الكلمة</p><div class="grid" style="grid-template-columns:repeat(3,1fr)">${G.cards.map((c,i)=>`<div class="opt" data-i="${i}" style="height:90px;display:flex;align-items:center;justify-content:center;background:var(--g);color:var(--g)">؟</div>`).join("")}</div></div>`;
+ document.querySelectorAll(".opt").forEach(e=>e.onclick=()=>{const i=+e.dataset.i,c=G.cards[i];if(G.lock||e.dataset.f||G.open.includes(i))return;e.textContent=c.t;e.style.background="#f6faf9";e.style.color="var(--ink)";G.open.push(i);
+  if(G.open.length==2){G.moves++;const [a,b]=G.open.map(j=>G.cards[j]);const els=G.open.map(j=>document.querySelector(`.opt[data-i="${j}"]`));
+   if(a.id==b.id&&a.k!=b.k){els.forEach(x=>{x.dataset.f=1;x.classList.add("ok")});setSc(2);G.found++;G.open=[];say(LET.find(l=>l[0]==a.id)[1],1);if(G.found==6){G.sc+=Math.max(0,8-G.moves);setTimeout(()=>endGame(),700)}}
+   else{G.lock=1;setTimeout(()=>{els.forEach(x=>{x.textContent="؟";x.style.background="var(--g)";x.style.color="var(--g)"});G.open=[];G.lock=0},900)}}})}
+/* flash */
+function confuse(t){const arr=[...t];const out=new Set();let n=0;
+ while(out.size<3&&n++<60){const a=arr.slice();const ix=a.map((c,i)=>i).filter(i=>/[\u0621-\u064A]/.test(a[i]));const i=ix[Math.random()*ix.length|0];const c=a[i];const g=SIM.find(s=>s.includes(c));
+  if(Math.random()<.5&&g&&g.length>1){a[i]=g.filter(x=>x!=c)[Math.random()*(g.length-1)|0]}
+  else{const hs=a.map((x,j)=>j).filter(j=>[FA,DA,KA].includes(a[j]));if(!hs.length)continue;const j=hs[Math.random()*hs.length|0];a[j]=[FA,DA,KA].filter(h=>h!=a[j])[Math.random()*2|0]}
+  const s=a.join("");if(s!=t)out.add(s)}
+ return [...out]}
+function gFlash(){G.i=0;G.q=shuffle(WORDS1.filter(w=>!w.t.startsWith("ال")&&w.p.length<=3)).slice(0,8);flashRound()}
+function flashRound(){
+ if(G.i>=G.q.length)return endGame();const w=G.q[G.i];
+ $("#app").innerHTML=gTop(`اللمحة السريعة (${G.i+1}/${G.q.length})`)+`<div class="card"><div class="big" id="fw" style="font-size:70px">${esc(w.t)}</div><p class="hint" id="fh">ركّز كويس…</p><div id="fo" style="display:none"></div></div>`;
+ G.to=setTimeout(()=>{if(!G)return;$("#fw").innerHTML="؟";$("#fh").textContent="كانت أنهي كلمة؟";const opts=shuffle([w.t].concat(confuse(w.t)));
+  const fo=$("#fo");fo.style.display="grid";fo.style.gridTemplateColumns="1fr 1fr";fo.style.gap="10px";fo.innerHTML=opts.map(o=>`<div class="opt" style="font-size:34px" data-o="${esc(o)}">${esc(o)}</div>`).join("");
+  fo.querySelectorAll(".opt").forEach(e=>e.onclick=()=>{if(G.lk)return;G.lk=1;const ok=e.dataset.o==w.t;e.classList.add(ok?"ok":"no");if(!ok){fo.querySelectorAll(".opt").forEach(x=>{if(x.dataset.o==w.t)x.classList.add("ok")});if(!S.stumble[w.t])S.stumble[w.t]={count:1,good:0,item:{t:w.t,s:w.s,p:w.p,k:w.k}};save()}else{setSc(2)}
+   say(w.s,1);G.to=setTimeout(()=>{G.lk=0;G.i++;flashRound()},ok?900:1700)})},1800)}
+
 render();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>

@@ -144,10 +144,17 @@ function pickVoice(){voices=(window.speechSynthesis?speechSynthesis.getVoices():
  const ar=voices.filter(v=>/^ar/i.test(v.lang));
  voice=ar.find(v=>/ar[-_]EG/i.test(v.lang))||ar.find(v=>/ar[-_]SA/i.test(v.lang))||ar[0]||null}
 if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=()=>{pickVoice();if(typeof render=="function"&&view=="home")render()}}
-function say(text,slow){if(!window.speechSynthesis)return false;
+function ttsWarn(lang,r){const now=Date.now();if(window.__tw&&now-window.__tw<8000)return;window.__tw=now;
+ const m=document.createElement("div");m.style.cssText="position:fixed;left:12px;right:12px;bottom:90px;background:#9a3412;color:#fff;padding:12px 14px;border-radius:14px;z-index:30;font-size:15px;text-align:right";
+ m.textContent=r=="noengine"?"مفيش محرك صوت (Text-to-speech) شغال على التليفون. الإعدادات > الإدارة العامة > تحويل النص إلى كلام.":(lang=="ar"?"مفيش صوت عربي متثبت على التليفون. الإعدادات > الإدارة العامة > تحويل النص إلى كلام > ثبّت الصوت العربي.":"مفيش صوت إنجليزي متثبت على التليفون. الإعدادات > الإدارة العامة > تحويل النص إلى كلام > ثبّت الصوت الإنجليزي.");
+ document.body.appendChild(m);setTimeout(()=>m.remove(),6000)}
+function nativeSay(text,lang,rate,retry){try{const r=AbramTTS.speak(String(text),lang,rate);
+ if(r=="init"&&!retry){setTimeout(()=>nativeSay(text,lang,rate,1),700);return true}
+ if(r!="ok"){ttsWarn(lang,r);return false}return true}catch(e){return false}}
+function say(text,slow){if(window.AbramTTS)return nativeSay(text,"ar",slow?Math.max(.35,S.rate-.25):S.rate);if(!window.speechSynthesis)return false;
  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=voice?voice.lang:"ar-SA";if(voice)u.voice=voice;
  u.rate=slow?Math.max(.35,S.rate-.25):S.rate;speechSynthesis.speak(u);return true}catch(e){return false}}
-const audioOK=()=>!!window.speechSynthesis&&!!voice;
+const audioOK=()=>{if(window.AbramTTS){try{const r=AbramTTS.hasVoice("ar");return r!="missing"&&r!="noengine"}catch(e){return false}}return !!window.speechSynthesis&&!!voice};
 /* ============ HELPERS ============ */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -342,7 +349,7 @@ function flashRound(){
 var X=null,enVoice=null,mSpeed=1500;
 function pickEn(){const v=(window.speechSynthesis?speechSynthesis.getVoices():[]).filter(x=>/^en/i.test(x.lang));enVoice=v.find(x=>/en[-_]US/i.test(x.lang))||v[0]||null}
 if(window.speechSynthesis){pickEn();const o0=speechSynthesis.onvoiceschanged;speechSynthesis.onvoiceschanged=()=>{try{o0&&o0()}catch(e){}pickEn()}}
-function sayEn(t){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=enVoice?enVoice.lang:"en-US";if(enVoice)u.voice=enVoice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function sayEn(t){if(window.AbramTTS){nativeSay(t,"en",.8);return}if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=enVoice?enVoice.lang:"en-US";if(enVoice)u.voice=enVoice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
 function xStop(){if(X){clearTimeout(X.to);clearInterval(X.tm)}X=null}
 const _go=go;go=function(v){xStop();_go(v)};
 const pickN=(all,ans,n)=>shuffle(all.filter(x=>x!==ans)).slice(0,n-1).concat([ans]).sort(()=>Math.random()-.5);

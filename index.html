@@ -161,12 +161,12 @@ function addPhotos(inp){[...inp.files].slice(0,12).forEach(f=>{const r=new FileR
 const rndPhoto=()=>S.photos.length?S.photos[Math.random()*S.photos.length|0]:"";
 /* ============ VIEWS ============ */
 let view="home",sess=null;
-const TABS=[["home","🏠","الرئيسية"],["levels","🪜","الدروس"],["letters","🔤","الحروف"],["games","🎮","ألعاب"],["words","📌","كلماتي"],["parent","👨‍👩‍👦","ولي الأمر"]];
+const TABS=[["home","🏠","الرئيسية"],["levels","🪜","الدروس"],["letters","🔤","الحروف"],["games","🎮","ألعاب"],["extra","🌟","إنجليزي وحساب"],["parent","👨‍👩‍👦","ولي الأمر"]];
 function render(){
  $("#sub").textContent=S.name?`أهلاً يا ${S.name} 👋`:"تدرّب كل يوم ١٠ دقايق، وهتتحسن";
  $("#nav").innerHTML=TABS.map(t=>`<button class="${view==t[0]?"on":""}" onclick="go('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("");
  $("#nav").style.display=(sess||(typeof G!="undefined"&&G))?"none":"flex";
- ({home:vHome,levels:vLevels,letters:vLetters,words:vWords,games:vGames,parent:vParent,practice:vPractice,done:vDone})[view]();
+ ({home:vHome,levels:vLevels,letters:vLetters,words:vWords,games:vGames,parent:vParent,practice:vPractice,done:vDone,extra:vExtra,words:vWords})[view]();
  window.scrollTo(0,0)}
 function go(v){if(typeof G!="undefined"&&G){clearInterval(G.tm);clearInterval(G.sp);clearTimeout(G.to);G=null}view=v;sess=null;render()}
 function audioBanner(){return audioOK()?"":`<div class="banner">🔇 الصوت العربي مش متاح على الموبايل ده. التطبيق شغّال بدونه، لكن للسماع روح إعدادات الموبايل &gt; إمكانية الوصول &gt; تحويل النص إلى كلام، ونزّل صوت اللغة العربية. بعدها افتح التطبيق تاني.</div>`}
@@ -337,6 +337,137 @@ function flashRound(){
   const fo=$("#fo");fo.style.display="grid";fo.style.gridTemplateColumns="1fr 1fr";fo.style.gap="10px";fo.innerHTML=opts.map(o=>`<div class="opt" style="font-size:34px" data-o="${esc(o)}">${esc(o)}</div>`).join("");
   fo.querySelectorAll(".opt").forEach(e=>e.onclick=()=>{if(G.lk)return;G.lk=1;const ok=e.dataset.o==w.t;e.classList.add(ok?"ok":"no");if(!ok){fo.querySelectorAll(".opt").forEach(x=>{if(x.dataset.o==w.t)x.classList.add("ok")});if(!S.stumble[w.t])S.stumble[w.t]={count:1,good:0,item:{t:w.t,s:w.s,p:w.p,k:w.k}};save()}else{setSc(2)}
    say(w.s,1);G.to=setTimeout(()=>{G.lk=0;G.i++;flashRound()},ok?900:1700)})},1800)}
+
+/* ============ EXTRA: English + Mental math ============ */
+var X=null,enVoice=null,mSpeed=1500;
+function pickEn(){const v=(window.speechSynthesis?speechSynthesis.getVoices():[]).filter(x=>/^en/i.test(x.lang));enVoice=v.find(x=>/en[-_]US/i.test(x.lang))||v[0]||null}
+if(window.speechSynthesis){pickEn();const o0=speechSynthesis.onvoiceschanged;speechSynthesis.onvoiceschanged=()=>{try{o0&&o0()}catch(e){}pickEn()}}
+function sayEn(t){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=enVoice?enVoice.lang:"en-US";if(enVoice)u.voice=enVoice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function xStop(){if(X){clearTimeout(X.to);clearInterval(X.tm)}X=null}
+const _go=go;go=function(v){xStop();_go(v)};
+const pickN=(all,ans,n)=>shuffle(all.filter(x=>x!==ans)).slice(0,n-1).concat([ans]).sort(()=>Math.random()-.5);
+function xScreen(title,html){X=X||{};$("#app").innerHTML=`<div class="top"><button class="x" onclick="go('extra')">✕</button><b style="flex:1">${title}</b></div>`+html;$("#nav").style.display="none";window.scrollTo(0,0)}
+const AL=[["A","Apple","🍎","تفاحة"],["B","Ball","⚽","كورة"],["C","Cat","🐱","قطة"],["D","Dog","🐶","كلب"],["E","Egg","🥚","بيضة"],["F","Fish","🐟","سمكة"],["G","Grapes","🍇","عنب"],["H","Hat","🎩","قبعة"],["I","Ice cream","🍦","آيس كريم"],["J","Juice","🧃","عصير"],["K","Kite","🪁","طيارة ورق"],["L","Lion","🦁","أسد"],["M","Moon","🌙","قمر"],["N","Nose","👃","أنف"],["O","Orange","🍊","برتقالة"],["P","Pizza","🍕","بيتزا"],["Q","Queen","👑","ملكة"],["R","Rabbit","🐰","أرنب"],["S","Sun","☀️","شمس"],["T","Tree","🌳","شجرة"],["U","Umbrella","☂️","شمسية"],["V","Violin","🎻","كمان"],["W","Watch","⌚","ساعة"],["X","Box","📦","علبة (X في الآخر)"],["Y","Yellow","💛","أصفر"],["Z","Zebra","🦓","حمار وحشي"]];
+const THEMES=[
+["🐾","الحيوانات",[["cat","🐱","قطة"],["dog","🐶","كلب"],["fish","🐟","سمكة"],["bird","🐦","عصفور"],["cow","🐮","بقرة"],["lion","🦁","أسد"],["duck","🦆","بطة"],["horse","🐴","حصان"]]],
+["🍎","الأكل والشرب",[["apple","🍎","تفاحة"],["banana","🍌","موزة"],["milk","🥛","لبن"],["water","💧","مياه"],["egg","🥚","بيضة"],["bread","🍞","عيش"],["cake","🍰","تورتة"],["juice","🧃","عصير"]]],
+["🎨","الألوان",[["red","🔴","أحمر"],["blue","🔵","أزرق"],["green","🟢","أخضر"],["yellow","🟡","أصفر"],["black","⚫","أسود"],["white","⚪","أبيض"],["orange","🟠","برتقالي"],["purple","🟣","بنفسجي"]]],
+["🧍","الجسم",[["eye","👁️","عين"],["ear","👂","ودن"],["nose","👃","أنف"],["mouth","👄","بُق"],["hand","✋","إيد"],["foot","🦶","رجل"],["hair","💇","شعر"],["tooth","🦷","سنّة"]]],
+["👨‍👩‍👦","العيلة",[["mom","👩","ماما"],["dad","👨","بابا"],["boy","👦","ولد"],["girl","👧","بنت"],["baby","👶","بيبي"],["baby","👶","طفل"]].slice(0,5)],
+["🏠","حاجات حواليّا",[["book","📖","كتاب"],["pen","🖊️","قلم"],["bed","🛏️","سرير"],["door","🚪","باب"],["house","🏠","بيت"],["car","🚗","عربية"],["bus","🚌","أتوبيس"],["star","⭐","نجمة"]]],
+["🔢","الأرقام",[["one","1️⃣","واحد"],["two","2️⃣","اتنين"],["three","3️⃣","تلاتة"],["four","4️⃣","أربعة"],["five","5️⃣","خمسة"],["six","6️⃣","ستة"],["seven","7️⃣","سبعة"],["eight","8️⃣","تمانية"],["nine","9️⃣","تسعة"],["ten","🔟","عشرة"]]]];
+const EW=[].concat(...THEMES.map(t=>t[2]));
+const GR=[
+["1️⃣","ابتدائي","أهلاً وشكراً وجمل أولى",["Hello|أهلاً","Goodbye|مع السلامة","Thank you|شكراً","Please|لو سمحت","Sorry|آسف","Yes|أيوه","No|لأ","Good morning|صباح الخير","Good night|تصبح على خير","My name is Abram.|اسمي ابرام","This is a cat.|ده قطة","This is a book.|ده كتاب"],[["This is a ___.","cat",["dog","sun"],"ده قطة"],["Good ___!","morning",["apple","blue"],"صباح الخير"],["___ you.","Thank",["Hello","Red"],"شكراً"],["My ___ is Abram.","name",["book","cat"],"اسمي ابرام"]]],
+["2️⃣","ابتدائي","أنا عندي، أنا بحب، أسئلة بسيطة",["I have a book.|أنا عندي كتاب","She is my mother.|دي ماما","He is my father.|ده بابا","It is red.|ده أحمر","I like apples.|أنا بحب التفاح","I can see a bird.|أنا شايف عصفور","What is your name?|اسمك إيه؟","How are you?|إزيك؟","I am fine.|أنا كويس","Stand up.|قف","Sit down.|اقعد","Open the book.|افتح الكتاب"],[["I ___ a book.","have",["has","is"],"أنا عندي كتاب"],["She ___ my mother.","is",["am","are"],"دي ماما"],["I ___ apples.","like",["likes","liking"],"أنا بحب التفاح"],["___ are you?","How",["What","Who"],"إزيك؟"]]],
+["3️⃣","ابتدائي","أيام الأسبوع، أفعال، أماكن",["Sunday|الأحد","Monday|الاتنين","Tuesday|التلات","Wednesday|الأربع","Thursday|الخميس","Friday|الجمعة","Saturday|السبت","I can run.|أنا أقدر أجري","She can jump.|هي تقدر تنط","They are happy.|هم مبسوطين","Where is the cat?|فين القطة؟","It is on the table.|هي على الترابيزة","I eat bread.|أنا باكل عيش","We play football.|إحنا بنلعب كورة"],[["I ___ run.","can",["is","are"],"أنا أقدر أجري"],["The cat is ___ the table.","on",["eat","red"],"القطة على الترابيزة"],["They ___ happy.","are",["is","am"],"هم مبسوطين"],["We ___ football.","play",["plays","playing"],"إحنا بنلعب كورة"]]],
+["4️⃣","ابتدائي","الشهور، الطقس، الروتين اليومي",["January|يناير","February|فبراير","March|مارس","April|أبريل","May|مايو","June|يونيو","It is sunny.|الجو مشمس","It is rainy.|الجو ممطر","I go to school every day.|أنا بروح المدرسة كل يوم","He plays football.|هو بيلعب كورة","Do you like pizza?|بتحب البيتزا؟","Yes, I do.|أيوه بحبها","What time is it?|الساعة كام؟","I get up at seven.|أنا بصحى الساعة سبعة","My favorite color is blue.|لوني المفضل أزرق"],[["He ___ football.","plays",["play","playing"],"هو بيلعب كورة"],["___ you like pizza?","Do",["Does","Is"],"بتحب البيتزا؟"],["I get ___ at seven.","up",["on","in"],"أنا بصحى الساعة سبعة"],["It is ___ today.","sunny",["sun","run"],"الجو مشمس النهارده"]]],
+["5️⃣","ابتدائي","مهن، وصف، المضارع المستمر",["doctor|دكتور","teacher|مدرس","farmer|فلاح","engineer|مهندس","driver|سواق","nurse|ممرضة","He is a farmer.|هو فلاح","She does not like tea.|هي مش بتحب الشاي","I am reading a book.|أنا بقرأ كتاب دلوقتي","There are two books.|فيه كتابين","How much is this?|ده بكام؟","I want some water.|أنا عايز شوية مياه","Which is bigger?|أيهما أكبر؟","My brother is tall.|أخويا طويل"],[["She ___ reading.","is",["are","am"],"هي بتقرأ دلوقتي"],["There ___ two books.","are",["is","am"],"فيه كتابين"],["She ___ not like tea.","does",["do","is"],"هي مش بتحب الشاي"],["I want ___ water.","some",["a","an"],"عايز شوية مياه"]]],
+["6️⃣","ابتدائي","الماضي والمقارنة والمستقبل",["I went to school yesterday.|أنا رحت المدرسة امبارح","She watched TV.|هي شافت التلفزيون","We visited our grandmother.|زرنا جدتنا","He was sick.|هو كان تعبان","They were at home.|هم كانوا في البيت","This is bigger than that.|ده أكبر من ده","He is the tallest boy.|هو أطول ولد","I will travel tomorrow.|هسافر بكرة","I stayed home because I was tired.|قعدت في البيت عشان كنت تعبان","What did you do yesterday?|عملت إيه امبارح؟","I did not go out.|أنا ماخرجتش","My brother and I play together.|أنا وأخويا بنلعب مع بعض"],[["Yesterday I ___ to school.","went",["go","going"],"امبارح رحت المدرسة"],["He ___ sick yesterday.","was",["were","is"],"هو كان تعبان امبارح"],["Cairo is ___ than Alexandria.","bigger",["big","biggest"],"القاهرة أكبر من إسكندرية"],["I ___ travel tomorrow.","will",["did","was"],"هسافر بكرة"]]]];
+const bigEn=(t,fs)=>`<div dir="ltr" style="font-size:${fs||64}px;font-weight:800;text-align:center;font-family:system-ui,Arial,sans-serif;line-height:1.3">${esc(t)}</div>`;
+/* ---- more tab ---- */
+function vExtra(){
+ const b=S.best||{};const row=(ic,t,s,f,k)=>`<div class="lv" onclick="${f}"><div class="n" style="background:none;font-size:28px">${ic}</div><div class="t"><b>${t}</b><small>${s}</small></div><div style="font-size:13px;color:var(--mut)">${k&&b[k]?"أحسن: "+b[k]:""}</div></div>`;
+ $("#app").innerHTML=`<div class="card"><h2>🇬🇧 إنجليزي - دراسة (من الصف 1 للصف 6)</h2>`+
+ row("🔤","الحروف A-Z","كل حرف بكلمة وصورة وصوت","enAlpha()")+row("📚","كلمات بالموضوع","حيوانات، أكل، ألوان، جسم، أرقام...","enThemes()")+GR.map((g,i)=>row(g[0],"الصف "+(i+1)+" - "+g[1],g[2],"enGrade("+i+")","e_g"+i+"mean")).join("")+`</div>
+ <div class="card"><h2>🎮 إنجليزي - ألعاب الحروف والكلمات</h2>`+
+ row("👂","اسمع واختار الحرف","بتسمع حرف وتختاره","enQuiz('hear')","e_hear")+row("🖼️","أول حرف","الصورة بتبدأ بحرف إيه؟","enQuiz('first')","e_first")+row("✅","اختار الكلمة","الصورة اسمها إيه بالإنجليزي؟","enQuiz('word')","e_word")+row("🧩","ركّب الكلمة","رتّب الحروف بالترتيب","enSpell()","e_spell")+row("🃏","لعبة الذاكرة","وصّل الصورة بكلمتها","enMemory()","e_mem")+`</div>
+ <div class="card"><h2>🧮 الحساب الذهني (UCMAS)</h2>`+
+ row("📝","جمع وطرح مكتوب","الأرقام قدامك، احسبها في دماغك","mathMenu('written')","m_written")+row("⚡","فلاش (زي UCMAS)","الأرقام بتظهر واحد واحد وتختفي","mathMenu('flash')","m_flash")+row("✖️","جدول الضرب","اختار الجدول وتدرّب","mulMenu()","m_mul")+row("🧮","السوروبان (المعداد)","اتعلّم تحط الأرقام على المعداد","abacus()","m_aba")+`</div>
+ <div class="card"><div class="lv" onclick="go('words')"><div class="n" style="background:none;font-size:28px">📌</div><div class="t"><b>كلماتي الصعبة (عربي)</b><small>الكلمات اللي غلطت فيها</small></div></div></div>`}
+/* ---- English study ---- */
+function enAlpha(){xScreen("الحروف الإنجليزي",`<div class="card"><p class="hint">اضغط على أي حرف</p><div class="grid" dir="ltr">`+AL.map((a,i)=>`<div class="lt" style="font-family:system-ui,Arial,sans-serif;font-weight:800" onclick="enLetter(${i})">${a[0]}${a[0].toLowerCase()}<small>${a[2]}</small></div>`).join("")+`</div></div>`)}
+function enLetter(i){const a=AL[i];const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div style="text-align:center">${bigEn(a[0]+" "+a[0].toLowerCase(),80)}<div style="font-size:70px">${a[2]}</div>${bigEn(a[1],34)}<p class="hint">${a[3]}</p><div class="row"><button class="btn" onclick="sayEn('${a[0]}. ${a[1]}')">🔊 اسمع</button><button class="btn sec" onclick="enNav(${(i+25)%26},this)">◀ اللي قبله</button><button class="btn sec" onclick="enNav(${(i+1)%26},this)">اللي بعده ▶</button></div><button class="btn sec" style="margin-top:8px" onclick="this.closest('.modal').remove()">إغلاق</button></div>`;
+ document.body.appendChild(m);sayEn(a[0]+". "+a[1])}
+function enNav(i,el){el.closest(".modal").remove();enLetter(i)}
+function enThemes(){xScreen("كلمات بالموضوع",`<div class="card">`+THEMES.map((t,i)=>`<div class="lv" onclick="enTheme(${i})"><div class="n" style="background:none;font-size:30px">${t[0]}</div><div class="t"><b>${t[1]}</b><small>${t[2].length} كلمات</small></div></div>`).join("")+`</div>`)}
+function enTheme(i){const t=THEMES[i];xScreen(t[1],`<div class="card"><p class="hint">اضغط على الكلمة تسمعها</p>`+t[2].map(w=>`<div class="lv" onclick="sayEn(THEMES[${i}][2][${t[2].indexOf(w)}][0])"><div class="n" style="background:none;font-size:34px">${w[1]}</div><div class="t"><b dir="ltr" style="font-size:24px;text-align:right">${w[0]}</b><small>${w[2]}</small></div><div style="font-size:22px">🔊</div></div>`).join("")+`<button class="btn" style="margin-top:8px" onclick="sayAll(${i})">🔊 اسمعهم كلهم</button><button class="btn sec" style="margin-top:8px" onclick="enThemes()">رجوع</button></div>`)}
+function sayAll(i){const w=THEMES[i][2];let k=0;X.tm=setInterval(()=>{if(k>=w.length){clearInterval(X.tm);return}sayEn(w[k++][0])},1500)}
+/* ---- English games ---- */
+function enQuiz(kind){
+ const key="e_"+kind;let qs;
+ if(kind=="hear")qs=shuffle(AL).slice(0,10).map(a=>({sp:a[0],pr:`<div class="big" style="min-height:90px;font-size:60px">🔊</div><p class="hint">اسمع الحرف واختاره</p>`,o:pickN(AL.map(x=>x[0]),a[0],4),a:a[0],ls:1}));
+ else if(kind=="first")qs=shuffle(AL.filter(a=>"XYU".indexOf(a[0])<0)).slice(0,10).map(a=>({sp:a[1],pr:`<div class="big" style="min-height:90px">${a[2]}</div>${bigEn(a[1],30)}<p class="hint">بتبدأ بحرف إيه؟</p>`,o:pickN(AL.map(x=>x[0]),a[0],4),a:a[0],ls:1}));
+ else qs=shuffle(EW).slice(0,10).map(w=>({sp:w[0],pr:`<div class="big" style="min-height:90px">${w[1]}</div><p class="hint">${w[2]} - اسمها إيه بالإنجليزي؟</p>`,o:pickN(EW.map(x=>x[0]),w[0],4),a:w[0]}));
+ X={qs,i:0,ok:0,key};enQ()}
+function enQ(){const q=X.qs[X.i];
+ xScreen(`${X.i+1}/${X.qs.length}`,`<div class="card">${q.pr}<button class="btn sec small" style="margin:0 auto 10px;display:block" onclick="sayEn(X.qs[X.i].sp)">🔊 اسمع</button><div class="grid" style="grid-template-columns:repeat(${q.cols||2},1fr)" dir="ltr">`+q.o.map((o,j)=>`<div class="opt" dir="${q.rtl?"rtl":"ltr"}" style="font-size:${q.fs||(q.ls?54:30)}px;font-family:system-ui,Arial,sans-serif;font-weight:700" onclick="enAns(this,${j})">${esc(o)}</div>`).join("")+`</div></div>`);
+ setTimeout(()=>sayEn(q.sp),300)}
+function enAns(el,j){if(X.lock)return;X.lock=1;const q=X.qs[X.i];const good=q.o[j]==q.a;if(good){X.ok++;el.classList.add("ok")}else{el.classList.add("no");[...document.querySelectorAll(".opt")].forEach(e=>{if(e.textContent==q.a)e.classList.add("ok")})}
+ X.to=setTimeout(()=>{X.lock=0;X.i++;X.i<X.qs.length?enQ():xEnd(X.ok,X.qs.length,X.key,X.again||"enQuiz('"+X.key.slice(2)+"')")},good?700:1500)}
+function xEnd(ok,n,key,again){addPts(ok*2);const nb=best(key,ok);const k=X;xScreen("النتيجة",`<div class="card" style="text-align:center"><div class="praise">${nb?"🏆":ok>=n*.8?"🌟":"👏"}</div><h2>${ok} من ${n}</h2><p class="hint">+${ok*2} ⭐ نقاط${nb?" - رقم قياسي!":""}</p><button class="btn" onclick="${again}">العب تاني</button><button class="btn sec" style="margin-top:8px" onclick="go('extra')">رجوع</button></div>`)}
+function enSpell(){X={qs:shuffle(EW.filter(w=>w[0].length<=5)).slice(0,8),i:0,ok:0,key:"e_spell"};spRound()}
+function spRound(){const w=X.qs[X.i];X.pos=0;X.bad=0;X.letters=shuffle(w[0].split("").map((c,i)=>[c,i]));
+ xScreen(`${X.i+1}/${X.qs.length}`,`<div class="card" style="text-align:center"><div class="big" style="min-height:90px">${w[1]}</div><p class="hint">${w[2]}</p><button class="btn sec small" style="margin:0 auto 8px;display:block" onclick="sayEn('${w[0]}')">🔊 اسمع</button><div id="slots" dir="ltr" style="font-size:46px;font-weight:800;letter-spacing:8px;min-height:70px;font-family:system-ui,Arial,sans-serif">${w[0].split("").map(()=>"_").join(" ")}</div><div class="grid" dir="ltr" style="margin-top:10px">`+X.letters.map((l,j)=>`<div class="opt" id="sl${j}" style="font-size:38px;font-family:system-ui,Arial,sans-serif;font-weight:800" onclick="spTap(${j})">${l[0]}</div>`).join("")+`</div></div>`);sayEn(w[0])}
+function spTap(j){const w=X.qs[X.i];const l=X.letters[j];const el=$("#sl"+j);if(el.style.visibility=="hidden")return;
+ if(l[0]==w[0][X.pos]){X.pos++;el.style.visibility="hidden";$("#slots").textContent=w[0].slice(0,X.pos).split("").join(" ")+" "+w[0].slice(X.pos).split("").map(()=>"_").join(" ");
+  if(X.pos==w[0].length){if(!X.bad)X.ok++;sayEn(w[0]);X.to=setTimeout(()=>{X.i++;X.i<X.qs.length?spRound():xEnd(X.ok,X.qs.length,"e_spell","enSpell()")},900)}}
+ else{X.bad++;el.classList.add("no");setTimeout(()=>el.classList.remove("no"),400)}}
+function enMemory(){const ws=shuffle(EW).slice(0,6);const cards=shuffle(ws.map(w=>({k:w[0],t:w[1],pic:1})).concat(ws.map(w=>({k:w[0],t:w[0]}))));X={cards,open:[],done:0,moves:0,key:"e_mem"};
+ xScreen("لعبة الذاكرة",`<div class="card"><p class="hint">وصّل الصورة بكلمتها <span id="mv"></span></p><div class="grid" dir="ltr" style="grid-template-columns:repeat(3,1fr)">`+cards.map((c,i)=>`<div class="opt" id="mc${i}" style="font-size:${c.pic?44:22}px;min-height:84px;display:flex;align-items:center;justify-content:center;font-family:system-ui,Arial,sans-serif;font-weight:700" onclick="mcTap(${i})">❓</div>`).join("")+`</div></div>`)}
+function mcTap(i){if(X.lock)return;const c=X.cards[i],el=$("#mc"+i);if(X.open.includes(i)||el.dataset.d)return;el.textContent=c.t;el.style.background="#e9f8f5";if(!c.pic)sayEn(c.t);X.open.push(i);
+ if(X.open.length==2){X.moves++;$("#mv").textContent="("+X.moves+" محاولة)";const[a,b]=X.open;
+  if(X.cards[a].k==X.cards[b].k){[a,b].forEach(j=>{$("#mc"+j).dataset.d=1;$("#mc"+j).classList.add("ok")});X.open=[];X.done++;if(X.done==6)X.to=setTimeout(()=>{const sc=Math.max(0,12-Math.max(0,X.moves-6));xEnd(sc>10?10:sc,10,"e_mem","enMemory()")},700)}
+  else{X.lock=1;X.to=setTimeout(()=>{[a,b].forEach(j=>{const e=$("#mc"+j);e.textContent="❓";e.style.background=""});X.open=[];X.lock=0},900)}}}
+/* ---- Mental math ---- */
+const MCFG=[null,{n:3,lo:1,hi:9,max:9,t:"سهل: أرقام من 1 لـ 9"},{n:4,lo:1,hi:9,max:20,t:"أرقام من 1 لـ 9، النتيجة لحد 20"},{n:3,lo:1,hi:99,max:99,t:"أرقام لحد 99"},{n:4,lo:1,hi:99,max:199,t:"4 أرقام لحد 99"},{n:5,lo:10,hi:99,max:299,t:"5 أرقام من خانتين"}];
+function genSeq(l){const c=MCFG[l];let tot=0;const seq=[];
+ for(let k=0;k<c.n;k++){let v=1,s=1,ok=false;for(let t=0;t<60&&!ok;t++){v=c.lo+(Math.random()*(c.hi-c.lo+1)|0);s=(k==0||Math.random()<.5)?1:-1;const nt=tot+s*v;ok=nt>=0&&nt<=c.max&&(k>0||s>0)}
+  if(!ok){s=tot+1<=c.max?1:-1;v=1}tot+=s*v;seq.push(s*v)}
+ return{seq,ans:tot}}
+function mathMenu(mode){X={};const sp=[2000,1500,1000,700];
+ xScreen(mode=="flash"?"فلاش":"جمع وطرح",`<div class="card">`+(mode=="flash"?`<h3>سرعة ظهور الرقم</h3><div class="row" id="spd">`+sp.map(s=>`<button class="btn small ${s==mSpeed?"":"sec"}" onclick="mSpeed=${s};mathMenu('flash')">${s/1000} ث</button>`).join("")+`</div>`:"")+`<h3>اختار المستوى</h3>`+[1,2,3,4,5].map(l=>`<div class="lv" onclick="startMath('${mode}',${l})"><div class="n">${l}</div><div class="t"><b>مستوى ${l}</b><small>${MCFG[l].t}</small></div></div>`).join("")+`</div>`)}
+function startMath(mode,lvl){const qs=[];for(let i=0;i<10;i++){const g=genSeq(lvl);qs.push({seq:g.seq,a:g.ans})}X={qs,i:0,ok:0,mode,lvl,key:"m_"+mode,again:`startMath('${mode}',${lvl})`,typ:""};mQ()}
+const fmtSeq=seq=>seq.map((v,i)=>i==0?String(v):(v<0?"− ":"+ ")+Math.abs(v));
+function keypad(){return `<div class="grid" dir="ltr" style="grid-template-columns:repeat(3,1fr);margin-top:10px">`+[1,2,3,4,5,6,7,8,9,"⌫",0,"✓"].map(k=>`<div class="opt" style="font-size:30px;padding:12px 0;${k=="✓"?"background:#dcfce7":""}" onclick="kp('${k}')">${k}</div>`).join("")+`</div>`}
+function mQ(){const q=X.qs[X.i];X.typ="";X.lock=0;
+ const head=`<div class="bar" style="margin-bottom:10px"><i style="width:${X.i/X.qs.length*100}%"></i></div>`;
+ const ans=`<div id="ans" dir="ltr" style="text-align:center;font-size:44px;font-weight:800;min-height:62px;border-bottom:3px solid var(--g2);margin:8px 30px;font-family:system-ui,Arial,sans-serif">&nbsp;</div>`+keypad();
+ if(X.mode=="flash"){xScreen(`${X.i+1}/${X.qs.length}`,head+`<div class="card" id="fl" style="text-align:center"><div id="fn" dir="ltr" style="font-size:96px;font-weight:800;min-height:130px;line-height:130px;font-family:system-ui,Arial,sans-serif">🧠</div><p class="hint" id="fh">استعد... الأرقام هتظهر وتختفي</p><div id="ansbox" style="display:none">${ans}</div></div>`);
+  let k=-1;const step=()=>{if(!X||X.qs!==X.qs)return;k++;const fn=$("#fn");if(!fn)return;if(k>=q.seq.length){fn.textContent="؟";$("#fh").textContent="الناتج كام؟";$("#ansbox").style.display="block";return}
+   fn.textContent=fmtSeq(q.seq)[k];X.to=setTimeout(()=>{const f=$("#fn");if(f)f.textContent="";X.to=setTimeout(step,250)},mSpeed)};
+  X.to=setTimeout(step,1200)}
+ else xScreen(`${X.i+1}/${X.qs.length}`,head+`<div class="card" style="text-align:center"><div dir="ltr" style="display:inline-block;text-align:right;font-size:54px;font-weight:800;line-height:1.35;font-family:system-ui,Arial,sans-serif">${fmtSeq(q.seq).map(s=>`<div>${s}</div>`).join("")}<div style="border-top:4px solid var(--ink);margin-top:4px"></div></div>${ans}</div>`)}
+function kp(k){if(!X||X.lock)return;const sh=()=>{const e=$("#ans");if(e)e.textContent=X.typ||"\u00a0"};
+ if(k=="⌫"){X.typ=X.typ.slice(0,-1);sh()}else if(k=="✓"){if(X.typ==="")return;mCheck()}else if(X.typ.length<4){X.typ+=k;sh()}}
+function mCheck(){X.lock=1;const q=X.qs[X.i];const good=+X.typ===q.a;const e=$("#ans");
+ if(good){X.ok++;e.style.color="var(--ok)";e.textContent="✓ "+q.a}else{e.style.color="var(--bad)";e.innerHTML=`${X.typ} ✗ <small style="font-size:20px">الصح: ${q.a}</small>`;if(X.mode=="flash"){const fh=$("#fh");if(fh)fh.textContent=fmtSeq(q.seq).join("  ")}}
+ X.to=setTimeout(()=>{X.i++;X.i<X.qs.length?(X.mul?mulQ():mQ()):mEnd()},good?700:2200)}
+function mEnd(){const ok=X.ok,n=X.qs.length,key=X.key,again=X.again,lvl=X.lvl;addPts(ok*3);const nb=best(key,ok);
+ xScreen("النتيجة",`<div class="card" style="text-align:center"><div class="praise">${ok>=9?"🏆":ok>=7?"🌟":"👏"}</div><h2>${ok} من ${n}</h2><p class="hint">+${ok*3} ⭐${nb?" - رقم قياسي!":""}</p>${lvl&&ok>=8&&lvl<5?`<p class="hint" style="color:var(--ok)">شاطر! جرّب المستوى الجاي</p>`:""}<button class="btn" onclick="${again}">تاني</button>${lvl&&ok>=8&&lvl<5?`<button class="btn ok" style="margin-top:8px" onclick="${again.replace(/,\d\)/,","+(lvl+1)+")")}">المستوى الجاي ▶</button>`:""}<button class="btn sec" style="margin-top:8px" onclick="go('extra')">رجوع</button></div>`)}
+function mulMenu(){X={};xScreen("جدول الضرب",`<div class="card"><h3>اختار الجدول</h3><div class="grid" dir="ltr">`+[2,3,4,5,6,7,8,9,10].map(t=>`<div class="lt" style="font-family:system-ui;font-weight:800" onclick="startMul(${t})">×${t}</div>`).join("")+`<div class="lt" style="font-family:system-ui;font-weight:800;grid-column:span 3;font-size:22px;padding:18px 0" onclick="startMul(0)">كله 🎲</div></div></div>`)}
+function startMul(t){const qs=[];for(let i=0;i<10;i++){const a=t||(2+Math.random()*9|0),b=1+(Math.random()*10|0);qs.push({a:a*b,txt:`${a} × ${b}`})}X={qs,i:0,ok:0,mul:1,key:"m_mul",again:`startMul(${t})`,typ:""};mulQ()}
+function mulQ(){const q=X.qs[X.i];X.typ="";X.lock=0;xScreen(`${X.i+1}/${X.qs.length}`,`<div class="bar" style="margin-bottom:10px"><i style="width:${X.i/X.qs.length*100}%"></i></div><div class="card" style="text-align:center"><div dir="ltr" style="font-size:64px;font-weight:800;font-family:system-ui,Arial,sans-serif">${q.txt} = ?</div><div id="ans" dir="ltr" style="text-align:center;font-size:44px;font-weight:800;min-height:62px;border-bottom:3px solid var(--g2);margin:8px 30px;font-family:system-ui,Arial,sans-serif">&nbsp;</div>${keypad()}</div>`)}
+/* ---- soroban ---- */
+var AB=null;
+function abacus(){AB={r:[{h:0,e:0},{h:0,e:0},{h:0,e:0},{h:0,e:0}],t:0,free:1};abDraw()}
+function abVal(){return AB.r.reduce((s,x,i)=>s+(x.h*5+x.e)*Math.pow(10,3-i),0)}
+function abDraw(){let svg=`<svg viewBox="0 0 330 250" width="100%" style="max-width:420px;direction:ltr"><rect x="6" y="6" width="318" height="238" rx="14" fill="#8b5a2b"/><rect x="14" y="14" width="302" height="222" rx="8" fill="#f5deb3"/><rect x="14" y="96" width="302" height="7" fill="#5b3a1a"/>`;
+ AB.r.forEach((r,i)=>{const x=50+i*76;svg+=`<rect x="${x-2}" y="20" width="4" height="210" fill="#5b3a1a"/>`;
+  svg+=`<ellipse cx="${x}" cy="${r.h?73:36}" rx="24" ry="12" fill="#c2410c" onclick="abTap(${i},0)"/>`;
+  for(let k=1;k<=4;k++){const y=(k<=r.e?112:150)+(k-1)*24;svg+=`<ellipse cx="${x}" cy="${y}" rx="24" ry="12" fill="#0f766e" onclick="abTap(${i},${k})"/>`}
+  svg+=`<text x="${x}" y="248" font-size="11" text-anchor="middle" fill="#5b3a1a">${["آلاف","مئات","عشرات","آحاد"][i]}</text>`});
+ svg+=`</svg>`;
+ xScreen("السوروبان",`<div class="card" style="text-align:center">${AB.free?`<p class="hint">جرّب بنفسك: الخرزة الحمرا فوق = 5، والخضرا تحت = 1 لكل واحدة. اضغط على الخرزة تحركها ناحية الفاصل.</p>`:`<h2 dir="ltr">حط الرقم: <span style="color:var(--g)">${AB.t}</span></h2>`}${svg}<div dir="ltr" style="font-size:44px;font-weight:800;font-family:system-ui">${abVal()}</div><div class="row" style="margin-top:10px">${AB.free?`<button class="btn" onclick="abNew()">🎯 تحدي</button>`:`<button class="btn ok" onclick="abCheck()">✓ تأكد</button><button class="btn sec" onclick="abNew()">رقم تاني</button>`}<button class="btn sec" onclick="AB.r.forEach(x=>{x.h=0;x.e=0});abDraw()">صفّر</button></div></div>`)}
+function abTap(i,k){const r=AB.r[i];if(k==0)r.h=r.h?0:1;else r.e=r.e>=k?k-1:k;abDraw()}
+function abNew(){AB.free=0;AB.t=1+(Math.random()*(AB.sc>3?9998:99)|0);AB.r.forEach(x=>{x.h=0;x.e=0});abDraw()}
+function abCheck(){if(abVal()==AB.t){AB.sc=(AB.sc||0)+1;addPts(3);best("m_aba",AB.sc);const m=document.createElement("div");m.className="modal";m.innerHTML=`<div style="text-align:center"><div class="praise">🌟</div><h2>صح! +3 ⭐</h2><button class="btn" onclick="this.closest('.modal').remove();abNew()">رقم جديد</button></div>`;document.body.appendChild(m)}
+ else{alert("لسه مش مظبوط، حاول تاني")}}
+
+/* ---- grades 1-6 ---- */
+function enGrade(g){const G6=GR[g];
+ xScreen("الصف "+(g+1),`<div class="card"><h2>${G6[0]} ${G6[1]}: ${G6[2]}</h2><p class="hint">اضغط على الجملة تسمعها</p>`+G6[3].map((it,i)=>{const[a,b]=it.split("|");return `<div class="lv" onclick="sayG(${g},${i})"><div class="t"><b dir="ltr" style="font-size:20px;text-align:left">${esc(a)}</b><small>${esc(b)}</small></div><div style="font-size:22px">🔊</div></div>`}).join("")+`</div><div class="card"><h2>🎮 تمارين الصف ${g+1}</h2>
+ <div class="lv" onclick="enGQ(${g},'mean')"><div class="n" style="background:none;font-size:28px">🔤</div><div class="t"><b>إيه معناها؟</b><small>اختار المعنى بالعربي</small></div><div style="font-size:13px;color:var(--mut)">${(S.best||{})["e_g"+g+"mean"]?"أحسن: "+S.best["e_g"+g+"mean"]:""}</div></div>
+ <div class="lv" onclick="enGQ(${g},'hear')"><div class="n" style="background:none;font-size:28px">👂</div><div class="t"><b>اسمع واختار</b><small>اسمع الجملة واختار المكتوبة صح</small></div></div>
+ <div class="lv" onclick="enGQ(${g},'blank')"><div class="n" style="background:none;font-size:28px">✍️</div><div class="t"><b>كمّل الجملة</b><small>اختار الكلمة الناقصة</small></div></div></div>`)}
+function sayG(g,i){sayEn(GR[g][3][i].split("|")[0])}
+function enGQ(g,kind){const G6=GR[g],its=G6[3].map(x=>x.split("|")),key="e_g"+g+kind;let qs;
+ const allAr=[].concat(...GR.map(x=>x[3].map(y=>y.split("|")[1])));
+ if(kind=="mean")qs=shuffle(its).slice(0,10).map(it=>({sp:it[0],pr:bigEn(it[0],it[0].length>14?26:40),o:pickN(its.map(x=>x[1]).concat(shuffle(allAr).slice(0,6)),it[1],4),a:it[1],rtl:1,fs:18,cols:1}));
+ else if(kind=="hear")qs=shuffle(its).slice(0,10).map(it=>({sp:it[0],pr:`<div class="big" style="min-height:90px;font-size:60px">🔊</div><p class="hint">اسمع واختار المكتوب صح</p>`,o:pickN(its.map(x=>x[0]),it[0],4),a:it[0],fs:20,cols:1}));
+ else qs=shuffle(G6[4]).concat(shuffle(G6[4])).slice(0,8).map(b=>({sp:b[0].replace("___",b[1]),pr:bigEn(b[0],b[0].length>16?26:34)+`<p class="hint">${b[3]}</p>`,o:pickN([b[1]].concat(b[2]),b[1],3),a:b[1],fs:32,cols:3}));
+ X={qs,i:0,ok:0,key,again:`enGQ(${g},'${kind}')`};enQ()}
 
 render();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});

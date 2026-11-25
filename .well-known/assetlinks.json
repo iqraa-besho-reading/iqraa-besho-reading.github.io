@@ -1,0 +1,1 @@
+[{"relation": ["delegate_permission/common.handle_all_urls"], "target": {"namespace": "android_app", "package_name": "io.github.iqraa_besho_reading.twa", "sha256_cert_fingerprints": ["D4:1E:B4:CB:63:03:E1:92:90:EA:F6:75:71:1C:5C:3D:D7:6C:69:F4:40:99:96:95:62:29:50:53:15:16:1B:38"]}}]
